@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Scripts Archive</title>
+
+        <!--Favicon stuff-->
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/apple-touch-icon.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/favicon-16x16.png"
+        />
+        <link rel="manifest" href="/site.webmanifest" />
+
+        <!-- Pico.css Jade theme -->
+        <link rel="stylesheet" href="css/pico.jade.min.css" />
+        <style>
+            /* Tweak: center content and add top padding for nicer spacing */
+            body {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                padding-top: 4rem; /* adjust this value to increase/decrease top spacing */
+                min-height: 100vh;
+                box-sizing: border-box;
+                gap: 1.25rem;
+                background: var(--bg, transparent);
+            }
+
+            /* Keep Pico's container sizing but center it and add horizontal padding */
+            .container {
+                width: 100%;
+                max-width: 70rem;
+                padding-inline: 1rem;
+            }
+
+            /* Center all text within header, main, and footer */
+            header.container,
+            main.container,
+            footer.container {
+                text-align: center;
+            }
+
+            /* Ensure footer sticks to the bottom when content is short */
+            footer.container {
+                margin-top: auto;
+            }
+
+            /* Improve readability for article text */
+            article {
+                max-width: 60ch;
+                margin: 0 auto;
+            }
+
+            /* Global: make long words/URLs wrap instead of overflowing */
+            :where(
+                    p,
+                    li,
+                    a,
+                    h1,
+                    h2,
+                    h3,
+                    h4,
+                    h5,
+                    h6,
+                    blockquote,
+                    small,
+                    figcaption,
+                    td,
+                    th
+                ) {
+                overflow-wrap: anywhere; /* modern, friendly wrapping */
+                word-break: normal;
+                hyphens: auto;
+            }
+
+            /* Cap text measure across typical typographic blocks for readability */
+            :where(header.container, main.container, footer.container)
+                > :where(p, h1, h2, h3, ul, ol, blockquote, pre, small) {
+                max-width: 65ch;
+                margin-inline: auto;
+            }
+
+            /* Preserve code blocks but allow wrapping if needed */
+            pre {
+                white-space: pre-wrap;
+                overflow-x: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <header class="container">
+            <h1>Welcome to my scripts archive!</h1>
+            <p>
+                This is a repo I made so I can share all my scripts for various
+                linux/windows things without paying for a VPS ;)
+            </p>
+        </header>
+
+        <main class="container">
+            <article>
+                <header>
+                    <h2>About this website</h2>
+                </header>
+                <p>
+                    This is an updated list of all the scripts that are here and
+                    how to use them:
+                </p>
+                <ul>
+                    <li>
+                        Windows admin executer without admin access:
+                        <a href="/winadmin.ps1">/winadmin.ps1</a>
+                    </li>
+                </ul>
+            </article>
+        </main>
+
+        <footer class="container">
+            <hr />
+            <small
+                >© <span id="year"></span> Mihnea Mosorescu. All rights
+                reserved.</small
+            >
+        </footer>
+
+        <script>
+            document.getElementById("year").textContent =
+                new Date().getFullYear();
+        </script>
+    </body>
+</html>
