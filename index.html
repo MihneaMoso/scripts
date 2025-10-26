@@ -28,6 +28,11 @@
         <!-- Pico.css Jade theme -->
         <link rel="stylesheet" href="css/pico.jade.min.css" />
         <style>
+            /* hide page scrollbar */
+            html { scrollbar-width: none; } /* Firefox */
+            body { -ms-overflow-style: none; } /* IE and Edge */
+            body::-webkit-scrollbar, body::-webkit-scrollbar-button { display: none; } /* Chrome */
+/* end hide page scrollbar */
             /* Tweak: center content and add top padding for nicer spacing */
             body {
                 display: flex;
