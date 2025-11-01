@@ -1,5 +1,12 @@
+# installtlauncher.ps1
 # Script made by @MihneaMoso
 # Copyright © 2025 Mihnea Moso
+
+Set-StrictMode -Version Latest
+$VerbosePreference = "Continue"
+
+Write-Verbose "Starting script..."
+
 
 $username = $Env:UserName
 $downloads = "C:\Users\$username\Downloads\"
@@ -8,3 +15,6 @@ $tlauncher_url = "https://dl2.tlauncher.org/f.php?f=files%2FTLauncher-Installer-
 $tlauncher_path = "$downloads\tlauncher_installer.exe"
 curl.exe $tlauncher_url -o "$tlauncher_path"
 C:\Windows\System32\cmd.exe /min /C "set __COMPAT_LAYER=RUNASINVOKER && start `"`" `"$tlauncher_path`""
+
+
+Write-Verbose "Ending script."

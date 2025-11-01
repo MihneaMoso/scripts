@@ -1,6 +1,14 @@
 # install-mingw-fast.ps1
+# Made by @MihneaMoso
+# Copyright © 2025 Mihnea Moso
 # Admin-free, *fast* installer for latest MinGW-w64 GCC/G++ on Windows 11.
 # Uses curl.exe + 7-Zip portable (auto-downloaded if missing).
+
+Set-StrictMode -Version Latest
+$VerbosePreference = "Continue"
+
+Write-Verbose "Starting script..."
+
 
 # 0.  Self-elevate execution-policy for THIS process only
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force -ErrorAction SilentlyContinue
@@ -88,3 +96,5 @@ All done!  Open a **new** PowerShell or CMD window and run:
 
 to confirm the freshly installed MinGW-w64 toolchain.
 "@ -ForegroundColor Green
+
+Write-Verbose "Ending script."
