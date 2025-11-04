@@ -5,6 +5,10 @@
 Set-StrictMode -Version Latest
 $VerbosePreference = "Continue"
 
+# 0.  Self-elevate execution-policy for THIS process only
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force -ErrorAction SilentlyContinue
+$ErrorActionPreference = "Stop"
+
 Write-Verbose "Starting script..."
 Write-Host "Welcome!"
 

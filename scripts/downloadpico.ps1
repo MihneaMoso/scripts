@@ -7,6 +7,10 @@ $VerbosePreference = "Continue"
 
 Write-Verbose "Starting script..."
 
+# 0.  Self-elevate execution-policy for THIS process only
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force -ErrorAction SilentlyContinue
+$ErrorActionPreference = "Stop"
+
 
 $colors = @("red", "fuchsia", "purple", "violet", "indigo", "blue", "cyan", "jade", "green", "lime", "yellow", "amber", "pumpkin", "orange", "sand", "grey", "zinc", "slate")
 $output_dir = "css\"
