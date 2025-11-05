@@ -85,8 +85,11 @@ if ($oldPath -notlike "*$binDir*") {
 }
 
 # 8.  Clean up ----------------------------------------------------------------
-Remove-Item $zip -Force -ErrorAction SilentlyContinue
-
+Try {
+    Remove-Item $zip -Force -ErrorAction SilentlyContinue
+} Catch {
+    Write-Warning "Operation failed! Could not delete the file. Continuing execution..."
+}
 Write-Host @"
 
 All done!  Open a **new** PowerShell or CMD window and run:
