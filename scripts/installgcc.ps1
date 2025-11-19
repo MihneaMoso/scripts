@@ -1,6 +1,6 @@
 # install-mingw-fast.ps1
 # Made by @MihneaMoso
-# Copyright Â© 2025 Mihnea Moso
+# Copyright © 2025 Mihnea Moso
 # Admin-free, *fast* installer for latest MinGW-w64 GCC/G++ on Windows 11.
 # Uses curl.exe + 7-Zip portable (auto-downloaded if missing).
 
