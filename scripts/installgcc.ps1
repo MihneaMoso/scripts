@@ -1,6 +1,6 @@
 # install-mingw-fast.ps1
 # Made by @MihneaMoso
-# Copyright © 2025 Mihnea Moso
+# Copyright Â© 2025 Mihnea Moso
 # Admin-free, *fast* installer for latest MinGW-w64 GCC/G++ on Windows 11.
 # Uses curl.exe + 7-Zip portable (auto-downloaded if missing).
 
@@ -55,8 +55,18 @@ if (!(Test-Path $7zExe)) {
     }
     
     # Clean up
-    Remove-Item $7zInstaller -Force -ErrorAction SilentlyContinue
-    Remove-Item $extractDir -Recurse -Force -ErrorAction SilentlyContinue
+    Try {
+        Remove-Item $7zInstaller -Force -ErrorAction SilentlyContinue
+    } Catch {
+        Write-Warning "Operation failed! Could not delete the file. Continuing execution..."
+    }
+
+    Try {
+        Remove-Item $extractDir -Recurse -Force -ErrorAction SilentlyContinue
+    } Catch {
+        Write-Warning "Operation failed! Could not delete the file. Continuing execution..."
+    }
+    	
 }
 
 # 4.  Query GitHub API for latest release -------------------------------------
@@ -101,3 +111,4 @@ to confirm the freshly installed MinGW-w64 toolchain.
 "@ -ForegroundColor Green
 
 Write-Verbose "Ending script."
+
