@@ -25,7 +25,7 @@ Write-Host "Running with Administrator privileges." -ForegroundColor Green
 
 # --- Configuration ---
 $InstallDir = "C:\XMRig"
-$WalletAddress = "YOUR_WALLET_ADDRESS_HERE" # <--- REPLACE THIS
+$WalletAddress = "49G3kemCgBBPhjNK1gizHMR8V7qq5nMzrHz6BtETnqzSBTAs4tWCh7tWA9HZW6YhqHHwGUaX5t8EmjUyEe8FQPakU19pr8i" # <--- REPLACE THIS
 $PoolUrl = "pool.supportxmr.com:3333"
 $Coin = "monero"
 
@@ -48,7 +48,7 @@ try {
     # Force TLS 1.2 for GitHub API compatibility
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     $LatestRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/xmrig/xmrig/releases/latest"
-    $DownloadUrl = ($LatestRelease.assets | Where-Object { $_.name -like "*gcc-win64.zip" }).browser_download_url
+    $DownloadUrl = ($LatestRelease.assets | Where-Object { $_.name -like "*windows-gcc-x64.zip" }).browser_download_url
     
     if (-not $DownloadUrl) { throw "Could not find a Windows gcc-win64 zip file." }
     
