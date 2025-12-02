@@ -20,7 +20,7 @@ if (-not $IsAdmin) {
 $BaseDir = "C:\"
 $BuildEnvDir = "C:\XMRig_Build_Env" # Temporary build environment
 $InstallDir = "C:\XMRig"            # Final destination
-$WalletAddress = "YOUR_WALLET_ADDRESS_HERE" # <--- REPLACE THIS
+$WalletAddress = "49G3kemCgBBPhjNK1gizHMR8V7qq5nMzrHz6BtETnqzSBTAs4tWCh7tWA9HZW6YhqHHwGUaX5t8EmjUyEe8FQPakU19pr8i" # <--- REPLACE THIS
 $PoolUrl = "pool.supportxmr.com:3333"
 $MSYS2_URL = "https://github.com/msys2/msys2-installer/releases/download/2024-01-13/msys2-base-x86_64-20240113.tar.xz"
 
