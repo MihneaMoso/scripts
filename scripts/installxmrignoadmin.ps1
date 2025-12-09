@@ -3,7 +3,7 @@
 # Ensure you have permission to mine on this machine.
 
 # --- Configuration ---
-$InstallDir = "C:\XMRig"
+$InstallDir = "$env:USERPROFILE\Xmrig"
 $WalletAddress = "49G3kemCgBBPhjNK1gizHMR8V7qq5nMzrHz6BtETnqzSBTAs4tWCh7tWA9HZW6YhqHHwGUaX5t8EmjUyEe8FQPakU19pr8i" # <--- REPLACE THIS WITH YOUR ACTUAL WALLET
 $PoolUrl = "pool.supportxmr.com:3333"       # Example pool, change as needed
 $Coin = "monero"                            # Usually 'monero' for RandomX
