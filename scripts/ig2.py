@@ -6,10 +6,22 @@ import random
 from config import headers_comment, headers_followers, headers_following, headers_posts
 
 # CONSTANTS
-delay = 0.4  # s
+DELAY = 0.4  # s
+BIG_DELAY = 5
 WORKERS = 5
-comment_counter = 0
 AT_SIGN = "%40"
+HOST: str = "www.instagram.com"
+comment_counter = 0
+
+def setup_headers():
+    global headers_comment
+    headers_comment["Connection"] = "close"
+    global headers_followers
+    headers_followers["Connection"] = "close"
+    global headers_following
+    headers_following["Connection"] = "close"
+    global headers_posts
+    headers_posts["Connection"] = "close"
 
 async def async_loop(func):
     while True:
@@ -20,7 +32,7 @@ async def async_loop(func):
 def get_followers(count: int) -> list[str]:
     followers: list[str] = []
 
-    conn = http.client.HTTPSConnection("www.instagram.com")
+    conn = http.client.HTTPSConnection(HOST, timeout=5)
 
     conn.request(
         "GET",
@@ -28,7 +40,11 @@ def get_followers(count: int) -> list[str]:
         headers=headers_followers,
     )
     response = conn.getresponse()
-    json_data = json.loads(response.read())
+    body = response.read()
+    # print(f"Headers for followers: {response.getheaders()}")
+    json_data = json.loads(body)
+    conn.close()
+    
     users_length = len(json_data["users"])
     followers = [json_data["users"][i]["username"] for i in range(users_length)]
 
@@ -39,21 +55,25 @@ def get_followers(count: int) -> list[str]:
 def get_following(count: int) -> list[str]:
     following: list[str] = []
 
-    conn = http.client.HTTPSConnection("www.instagram.com")
+    conn = http.client.HTTPSConnection(HOST, timeout=5)
 
     conn.request(
         "GET", f"/api/v1/friendships/75712779519/following/?count={count}", headers=headers_following
     )
     response = conn.getresponse()
-    json_data = json.loads(response.read())
+    body = response.read()
+    # print(f"Headers for following: {response.getheaders()}")
+    json_data = json.loads(body)
+    conn.close()
+    
     users_length = len(json_data["users"])
     following = [json_data["users"][i]["username"] for i in range(users_length)]
 
     return following
 
 
-def get_nth_latest_postid(n: int = 0) -> tuple[int, str]:
-    conn = http.client.HTTPSConnection('www.instagram.com')
+def get_nth_latest_postid_title(n: int = 0) -> tuple[int, str]:
+    conn = http.client.HTTPSConnection(HOST, timeout=5)
     
     conn.request(
         'POST',
@@ -62,7 +82,11 @@ def get_nth_latest_postid(n: int = 0) -> tuple[int, str]:
         headers_posts
     )
     response = conn.getresponse()
-    json_data = json.loads(response.read())
+    body = response.read()
+    # print(f"Headers for posts: {response.getheaders()}")
+    conn.close()
+    
+    json_data = json.loads(body)
     edges = json_data["data"]["xdt_api__v1__feed__user_timeline_graphql_connection"]["edges"]
     id: int = edges[n]["node"]["pk"]
     title: str = edges[n]["node"]["caption"]["text"]
@@ -73,7 +97,7 @@ def do_comment_request(comment: str, post_id: int) -> int:
     # post_id = 3785127233443372196
     # post_id = 3785867440086106421
 
-    connmain = http.client.HTTPSConnection("www.instagram.com")
+    connmain = http.client.HTTPSConnection(HOST)
     connmain.request(
         "POST",
         f"/api/v1/web/comments/{post_id}/add/",
@@ -81,8 +105,10 @@ def do_comment_request(comment: str, post_id: int) -> int:
         headers_comment,
     )
     response = connmain.getresponse()
+    # body = response.read()
+    # print(f"Headers for comment: {response.getheaders()}")
+    # print(f"Body: {body[:500]}")
 
-    # data = response.read()
 
     connmain.close()
     return response.status
@@ -90,6 +116,7 @@ def do_comment_request(comment: str, post_id: int) -> int:
 
 async def main():
     try:
+        setup_headers()
 
         followers = await asyncio.to_thread(get_followers, 50)
         following = await asyncio.to_thread(get_following, 50)
@@ -99,7 +126,7 @@ async def main():
         print("Length of following: ", len(following))
         pool = set(followers).union(set(following))
         
-        latest_post_id, post_title = get_nth_latest_postid(n = 1)
+        latest_post_id, post_title = get_nth_latest_postid_title(n = 0)
         print(f"Latest post id: {latest_post_id} with the title {post_title}")
 
         global comment_counter
@@ -110,9 +137,12 @@ async def main():
             print(f"Tagging {username_to_tag}...")
             comment: str = AT_SIGN + username_to_tag
             status = await asyncio.to_thread(do_comment_request, comment, latest_post_id)
+            if (status == 400):
+                print("Status 400 encountered, cooldown for 5s")
+                await asyncio.sleep(BIG_DELAY)
             comment_counter += 1
             print(f"Comment {comment_counter} -> status: ", status)
-            await asyncio.sleep(delay)
+            await asyncio.sleep(DELAY)
 
 
 

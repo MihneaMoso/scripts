@@ -1,6 +1,6 @@
 
 headers_comment = {
-    'accept': '*/*',
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'accept-language': 'en-US,en;q=0.6',
     'content-type': 'application/x-www-form-urlencoded',
     'dnt': '1',
@@ -25,11 +25,12 @@ headers_comment = {
     'x-instagram-ajax': '1030890975',
     'x-requested-with': 'XMLHttpRequest',
     'x-web-session-id': 'bpo270:hw42gh:0k07zp',
+    "Connection": "close",
     'cookie': 'ds_user_id=75712779519; csrftoken=Q4zpS8iXrBZarcQTYZq6ed; mid=aTmyxQALAAEYb1XYQpzsTai-2Upm; ig_did=A5654AFE-A8D4-4F7F-8C97-732885066CC9; datr=z7I5aYue1H1CL9TxqbzZZuNt; sessionid=75712779519%3APOkVt9lXSwRn0K%3A22%3AAYiQGskvg1rxLP-1mn9W5x-C5HjiDZXuaI3TAeSpVw; wd=1383x1195; rur="RVA\\05475712779519\\0541796989857:01fe54deb774d43cd055319173cc0a74da63dae047744d61233557267347fb2a923f6ae0"',
 }
 
 headers_followers = {
-    'accept': '*/*',
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'accept-language': 'en-US,en;q=0.6',
     'dnt': '1',
     'priority': 'u=1, i',
@@ -51,11 +52,12 @@ headers_followers = {
     'x-ig-www-claim': 'hmac.AR3lZimQS0uXB8PVE6cFql0LrfRe_YFW7tm4ZTxbj6qiwAht',
     'x-requested-with': 'XMLHttpRequest',
     'x-web-session-id': 'h6hzty:hw42gh:0k07zp',
+    "Connection": "close",
     'cookie': 'ds_user_id=75712779519; csrftoken=Q4zpS8iXrBZarcQTYZq6ed; mid=aTmyxQALAAEYb1XYQpzsTai-2Upm; ig_did=A5654AFE-A8D4-4F7F-8C97-732885066CC9; datr=z7I5aYue1H1CL9TxqbzZZuNt; sessionid=75712779519%3APOkVt9lXSwRn0K%3A22%3AAYiQGskvg1rxLP-1mn9W5x-C5HjiDZXuaI3TAeSpVw; wd=1383x1195; rur="RVA\\05475712779519\\0541796990466:01fe4b0c0642601bc6d5c583e03999b7261c42939045f3cb9c61e3f39c13c32a99c48511"',
 }
 
 headers_following = {
-    'accept': '*/*',
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'accept-language': 'en-US,en;q=0.6',
     'dnt': '1',
     'priority': 'u=1, i',
@@ -77,11 +79,12 @@ headers_following = {
     'x-ig-www-claim': 'hmac.AR3lZimQS0uXB8PVE6cFql0LrfRe_YFW7tm4ZTxbj6qiwAht',
     'x-requested-with': 'XMLHttpRequest',
     'x-web-session-id': 't9ircn:hw42gh:6xask4',
+    "Connection": "close",
     'cookie': 'ds_user_id=75712779519; csrftoken=Q4zpS8iXrBZarcQTYZq6ed; mid=aTmyxQALAAEYb1XYQpzsTai-2Upm; ig_did=A5654AFE-A8D4-4F7F-8C97-732885066CC9; datr=z7I5aYue1H1CL9TxqbzZZuNt; sessionid=75712779519%3APOkVt9lXSwRn0K%3A22%3AAYiQGskvg1rxLP-1mn9W5x-C5HjiDZXuaI3TAeSpVw; wd=1383x1195; rur="RVA\\05475712779519\\0541796993109:01fe690534ec33b6ebd8135ab2de9d90c9adf1392ea9772f10584bd45737550afb4a49df"',
 }
 
 headers_posts = {
-    'accept': '*/*',
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'accept-language': 'en-US,en;q=0.6',
     'content-type': 'application/x-www-form-urlencoded',
     'dnt': '1',
@@ -106,5 +109,6 @@ headers_posts = {
     'x-fb-lsd': 'EURIpDDMu0fz4ePVVo-u0e',
     'x-ig-app-id': '936619743392459',
     'x-root-field-name': 'xdt_api__v1__feed__user_timeline_graphql_connection',
+    "Connection": "close",
     'cookie': 'ds_user_id=75712779519; csrftoken=Q4zpS8iXrBZarcQTYZq6ed; mid=aTmyxQALAAEYb1XYQpzsTai-2Upm; ig_did=A5654AFE-A8D4-4F7F-8C97-732885066CC9; datr=z7I5aYue1H1CL9TxqbzZZuNt; wd=1383x1195; sessionid=75712779519%3APOkVt9lXSwRn0K%3A22%3AAYh8sc2p5s07p4ka8dPknzzQnIjIkSU1spKnqjQBrg; rur="RVA\\05475712779519\\0541797156911:01fea616bc687935a5b1055aa0f775ddaf80f38dc6f4f9a95741435cc71c400ff7343a5a"',
 }
