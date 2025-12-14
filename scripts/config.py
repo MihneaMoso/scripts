@@ -130,7 +130,6 @@ headers_user = {
     'sec-fetch-dest': 'empty',
     'sec-fetch-mode': 'cors',
     'sec-fetch-site': 'same-origin',
-    "Connection": "close",
     'sec-gpc': '1',
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36',
     'x-asbd-id': '359341',
@@ -140,5 +139,6 @@ headers_user = {
     'x-fb-lsd': 'XjIgre_QAF--dATeFW577U',
     'x-ig-app-id': '936619743392459',
     'x-root-field-name': 'fetch__XDTUserDict',
+    "Connection": "close",
     'cookie': 'ds_user_id=75712779519; csrftoken=Q4zpS8iXrBZarcQTYZq6ed; mid=aTmyxQALAAEYb1XYQpzsTai-2Upm; ig_did=A5654AFE-A8D4-4F7F-8C97-732885066CC9; datr=z7I5aYue1H1CL9TxqbzZZuNt; wd=999x1195; sessionid=75712779519%3APOkVt9lXSwRn0K%3A22%3AAYg65sbiJ6OB9swNuPLapqb8I5Zg855lGpRPDK0FKw; rur="RVA\\05475712779519\\0541797243158:01fe1b6406927fabbdb146599cb090ed080d013c95307138d1fd213efc9b48609fdb2cb2"',
 }
