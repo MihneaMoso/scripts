@@ -2,6 +2,7 @@ import asyncio
 import http.client
 import json
 import random
+from pprint import pprint
 
 from config import headers_comment, headers_followers, headers_following, headers_posts, headers_user
 
@@ -31,14 +32,16 @@ class SimpleSession:
         self.host: str = host
         self.cookies: dict = {}
         self.default_headers: dict[str, str] = global_headers
+        # self.good_headers: dict[str, str] = global_headers
 
     def _cookie_header(self):
         return "; ".join(f"{k}={v}" for k, v in self.cookies.items())
 
     def request(self, method: str, path: str, payload: str = ""):
-        conn = http.client.HTTPConnection(self.host, timeout=5)
+        conn = http.client.HTTPSConnection(self.host, timeout=5)
 
         headers = dict(self.default_headers)
+        # pprint(f"Using headers: {headers}")
         if self.cookies:
             headers["cookie"] = self._cookie_header()
 
@@ -97,6 +100,7 @@ def get_user_id(username: str) -> int:
 
     session = SimpleSession(HOST)
     status, resp_headers, body = session.request("POST", '/graphql/query', payload=payload)
+    # print(body)
 
     json_data = json.loads(body)
     pk: int = json_data["data"]["user"]["pk"]
@@ -119,21 +123,25 @@ def do_comment_request(comment: str, post_id: int) -> int:
     # post_id = 3785127233443372196
     # post_id = 3785867440086106421
 
-    connmain = http.client.HTTPSConnection(HOST)
-    connmain.request(
-        "POST",
-        f"/api/v1/web/comments/{post_id}/add/",
-        f"comment_text={comment}+&jazoest=21991",
-        headers_comment,
-    )
-    response = connmain.getresponse()
-    # body = response.read()
+    # connmain = http.client.HTTPSConnection(HOST)
+    # connmain.request(
+    #     "POST",
+    #     f"/api/v1/web/comments/{post_id}/add/",
+    #     f"comment_text={comment}+&jazoest=21991",
+    #     headers_comment,
+    # )
+    # response = connmain.getresponse()
+    
+    path = f"/api/v1/web/comments/{post_id}/add/"
+    payload = f"comment_text={comment}+&jazoest=21991"
+    session = SimpleSession(HOST)
+    status, resp_headers, body = session.request("POST", path, payload=payload)
+    
     # print(f"Headers for comment: {response.getheaders()}")
     # print(f"Body: {body[:500]}")
 
 
-    connmain.close()
-    return response.status
+    return status
 
 
 async def main():
