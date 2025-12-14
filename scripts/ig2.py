@@ -3,7 +3,7 @@ import http.client
 import json
 import random
 
-from config import headers_comment, headers_followers, headers_following, headers_posts
+from config import headers_comment, headers_followers, headers_following, headers_posts, headers_user
 
 # CONSTANTS
 DELAY = 0.4  # s
@@ -22,6 +22,8 @@ def setup_headers():
     headers_following["Connection"] = "close"
     global headers_posts
     headers_posts["Connection"] = "close"
+    global headers_user
+    headers_user["Connection"] = "close"
 
 async def async_loop(func):
     while True:
@@ -29,14 +31,14 @@ async def async_loop(func):
 
 
 # Get a list of usernames that follow me
-def get_followers(count: int) -> list[str]:
+def get_followers(count: int, user_id: int) -> list[str]:
     followers: list[str] = []
 
     conn = http.client.HTTPSConnection(HOST, timeout=5)
 
     conn.request(
         "GET",
-        f"/api/v1/friendships/75712779519/followers/?count={count}&search_surface=follow_list_page",
+        f"/api/v1/friendships/{user_id}/followers/?count={count}&search_surface=follow_list_page",
         headers=headers_followers,
     )
     response = conn.getresponse()
@@ -52,13 +54,13 @@ def get_followers(count: int) -> list[str]:
 
 
 # Get a list of usernames that I follow
-def get_following(count: int) -> list[str]:
+def get_following(count: int, user_id: int) -> list[str]:
     following: list[str] = []
 
     conn = http.client.HTTPSConnection(HOST, timeout=5)
 
     conn.request(
-        "GET", f"/api/v1/friendships/75712779519/following/?count={count}", headers=headers_following
+        "GET", f"/api/v1/friendships/{user_id}/following/?count={count}", headers=headers_following
     )
     response = conn.getresponse()
     body = response.read()
@@ -71,6 +73,23 @@ def get_following(count: int) -> list[str]:
 
     return following
 
+def get_user_id(username: str) -> int:
+    conn = http.client.HTTPSConnection(HOST, timeout=5)
+    
+    conn.request(
+        'POST',
+        '/graphql/query',
+        'av=17841475705584097&__d=www&__user=0&__a=1&__req=1&__hs=20436.HCSV2%3Ainstagram_web_pkg.2.1...0&dpr=1&__ccg=EXCELLENT&__rev=1031064587&__s=i5fzvf%3Ahw42gh%3Aetslb3&__hsi=7583654752951851235&__dyn=7xe5WwlEnwn8K2Wmh0no6u5U4e1ZyUW3qi2K360O81nEhw2nVE4W0qa0FE2awgo9o1vohwGwQwoEcE2ygao1aU2swbOU2zxe2GewGw9a361qw8W5U4q08OwLyES1Twoob82ZwrUdUbGwmk0KU6O1FwlA1HQp1yU426V8aUuwm8jwhU3cyVrx60hK16wOw8-2i&__csr=gx2kBih4jsQdEBRSQx4aSICBNcZ9lYyKKLnGVsGFa8LCjJ29bGjK64H-rmECXF4VQGSy4OqAmqvJp5K2i7u2bDQQiUO68ybDCxacK3q8G2edwBDxO27UK68O48G4qggHQWx2BwLxm26FbzpFo98KqUOcWB8q1lxG2y2m08qw05tLw4LGaK09_Ct052AXweybyo0Sq04k80kB80a8wtUCbw5gwmQ0duwvay40jy1cwhYg0aqyWO014C3G1Mw0u7E11C0bXw0SLw&__hsdp=kMx8wEixtdnFpKAc284J6jFmXFeaFeqbypkihBtCLye8dzlzCjK78WVoIFK10hk4CykykWPjn50q85W7U6e1CzUvyEBx65Wxde1xw7Kxq0vW320ka02eu0lPw5uw1oe0pm11w&__hblp=050w8i9wtovwdC1rxq1RGm9zohBAzEWaAyEgwqovwAz81a8eE9ESUmwZwVK0ke3m8xe78-19xO18zE7e04po0R-0OE5q9w8yi267E2Qwei1aw3sE1bo3yx61Ix62W4o33wgo3Rw&__sjsp=kMx8wEixtdnFpKAc284J6jCAKF8Guqbypkih6tyK8Ux5zk46jK78796x9EB8BeIDdt0s87W0gZw&__comet_req=7&fb_dtsg=NAftfb8_jyb1aqsBfLCR-T5lPggUQ-3AU-P4nS5BN41JhqJy6Qk80gw%3A17853599968089360%3A1765388998&jazoest=26086&lsd=XjIgre_QAF--dATeFW577U&__spin_r=1031064587&__spin_b=trunk&__spin_t=1765707217&fb_api_caller_class=RelayModern&fb_api_req_friendly_name=PolarisProfilePageContentQuery&server_timestamps=true&variables=%7B%22enable_integrity_filters%22%3Atrue%2C%22id%22%3A%2275712779519%22%2C%22render_surface%22%3A%22PROFILE%22%2C%22__relay_internal__pv__PolarisProjectCannesLoggedInEnabledrelayprovider%22%3Atrue%2C%22__relay_internal__pv__PolarisCannesGuardianExperienceEnabledrelayprovider%22%3Atrue%2C%22__relay_internal__pv__PolarisCASB976ProfileEnabledrelayprovider%22%3Afalse%2C%22__relay_internal__pv__PolarisRepostsConsumptionEnabledrelayprovider%22%3Afalse%7D&doc_id=33257018913889225',
+        headers_user
+    )
+    
+    response = conn.getresponse()
+    body = response.read()
+    conn.close()
+
+    json_data = json.loads(body)
+    pk: int = json_data["data"]["user"]["pk"]
+    return pk
 
 def get_nth_latest_postid_title(n: int = 0) -> tuple[int, str]:
     conn = http.client.HTTPSConnection(HOST, timeout=5)
@@ -117,9 +136,12 @@ def do_comment_request(comment: str, post_id: int) -> int:
 async def main():
     try:
         setup_headers()
+        username: str = "bogdandumitru_"
+        user_id = get_user_id(username)
+        print(f"User id: {user_id}")
 
-        followers = await asyncio.to_thread(get_followers, 50)
-        following = await asyncio.to_thread(get_following, 50)
+        followers = await asyncio.to_thread(get_followers, 100, user_id)
+        following = await asyncio.to_thread(get_following, 100, user_id)
         print(followers)
         print("Length of followers: ", len(followers))
         print(following)
