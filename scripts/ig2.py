@@ -3,6 +3,7 @@ import http.client
 import json
 import random
 from pprint import pprint
+# import curl_cffi
 
 from config import headers_comment, headers_followers, headers_following, headers_posts, headers_user
 
@@ -69,6 +70,7 @@ def get_followers(count: int, user_id: int) -> list[str]:
 
     session = SimpleSession(HOST)
     status, resp_headers, body = session.request("GET", f"/api/v1/friendships/{user_id}/followers/?count={count}&search_surface=follow_list_page")
+    # print("Body: ", body)
     # print(f"Headers for followers: {response.getheaders()}")
     
     json_data = json.loads(body)
