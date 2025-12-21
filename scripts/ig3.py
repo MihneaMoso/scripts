@@ -2,6 +2,9 @@ import random
 import time
 import asyncio
 from typing import Optional, Dict, Any, Iterable, Tuple
+import socket
+import ipaddress
+from urllib.parse import urlparse
 from curl_cffi import requests
 
 # Small helper to parse cookie string "a=1; b=2"
@@ -15,6 +18,47 @@ def parse_cookie_string(cookie_str: str) -> Dict[str, str]:
             k, v = part.split("=", 1)
             cookies[k.strip()] = v.strip()
     return cookies
+
+def validate_proxy(proxy: str) -> tuple[str, int]:
+    """
+    Validates proxy URL and returns (host, port).
+    Raises ValueError on invalid input.
+    """
+    parsed = urlparse(proxy)
+
+    if parsed.scheme not in ("http", "https", "socks5", "socks5h"):
+        raise ValueError(f"Unsupported proxy scheme: {parsed.scheme}")
+
+    if not parsed.hostname or not parsed.port:
+        raise ValueError("Proxy must include host and port")
+
+    # Validate port
+    if not (1 <= parsed.port <= 65535):
+        raise ValueError("Invalid proxy port")
+
+    # Validate hostname / IP
+    try:
+        ipaddress.ip_address(parsed.hostname)
+    except ValueError:
+        # Not an IP → assume hostname, do a DNS sanity check
+        try:
+            socket.gethostbyname(parsed.hostname)
+        except socket.gaierror:
+            raise ValueError("Proxy hostname cannot be resolved")
+
+    return parsed.hostname, parsed.port
+
+
+def probe_tcp(host: str, port: int, timeout: float = 2.0) -> bool:
+    """
+    TCP reachability probe (acts like a 'ping' for services).
+    """
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            return True
+    except OSError:
+        return False
+
 
 class CurlSession:
     """
@@ -43,6 +87,8 @@ class CurlSession:
         max_retries: int = 3,
         backoff_factor: float = 0.5,
         timeout: float = 10.0,
+        proxy = None,
+        proxy_pool = [],
         **session_kwargs
     ):
         self.async_mode = async_mode
@@ -84,6 +130,49 @@ class CurlSession:
         except Exception:
             # AsyncSession.close is coroutine; handled in async close
             pass
+            
+    def _recreate_session_with_proxy(self, proxy: str | None):
+        """
+        Recreate session applying current impersonate + proxy,
+        preserving cookies if configured.
+        """
+    
+        cookies_backup = None
+        if self.preserve_cookies_on_rotate:
+            cookies_backup = self._cookies_dict()
+    
+        # Close existing session
+        try:
+            if self.async_mode:
+                # async close handled by caller if needed
+                pass
+            else:
+                self._session.close()
+        except Exception:
+            pass
+    
+        # Build kwargs
+        kwargs = dict(self._session_kwargs)
+        kwargs["timeout"] = self.timeout
+        kwargs["impersonate"] = self.impersonate
+    
+        if proxy:
+            kwargs["proxies"] = {
+                "http": proxy,
+                "https": proxy,
+            }
+    
+        # Recreate
+        if self.async_mode:
+            self._session = requests.AsyncSession(**kwargs)
+        else:
+            self._session = requests.Session(**kwargs)
+    
+        # Restore cookies
+        if cookies_backup:
+            for k, v in cookies_backup.items():
+                self._session.cookies.set(k, v)
+
 
     def _rotate_fingerprint(self):
         # choose a new impersonate target different from current
@@ -182,6 +271,42 @@ class CurlSession:
                 backoff = self.backoff_factor * (2 ** (attempt - 1))
                 backoff = backoff * (1 + random.random() * 0.5)
                 time.sleep(backoff)
+                
+    def rotate_proxy(
+        self,
+        proxy: str | None = None,
+        proxy_pool: list[str] | None = None,
+        probe_timeout: float = 2.0,
+    ):
+        """
+        Rotate proxy.
+        - proxy: single proxy string (overrides current)
+        - proxy_pool: list of proxy strings to rotate randomly
+        - probe_timeout: TCP probe timeout in seconds
+        """
+    
+        if proxy_pool:
+            self.proxy_pool = list(proxy_pool)
+    
+        if proxy is None and self.proxy_pool:
+            proxy = random.choice(self.proxy_pool)
+    
+        if proxy is None:
+            # Explicitly clear proxy
+            self.proxy = None
+            self._recreate_session_with_proxy(None)
+            return
+    
+        # Validate proxy
+        host, port = validate_proxy(proxy)
+    
+        # Reachability check
+        if not probe_tcp(host, port, timeout=probe_timeout):
+            raise RuntimeError(f"Proxy {host}:{port} is unreachable")
+    
+        self.proxy = proxy
+        self._recreate_session_with_proxy(proxy)
+
 
     # ----------------- ASYNC request -----------------
     async def arequest(self, method: str, url: str, *,
