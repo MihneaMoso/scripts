@@ -191,7 +191,7 @@ namespace Audio {
 "@
 
 # 2.4 Wait the requested delay
-Start-Sleep -Minutes $DelayMinutes
+# Start-Sleep -Minutes $DelayMinutes
 
 # 2.5 Set system volume to 100%
 [Audio.AudioManager]::SetMasterVolumeScalar(1.0)
