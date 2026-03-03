@@ -5,9 +5,11 @@
 
 $ErrorActionPreference = "Stop"
 
-$endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent"
+$model_name = "gemini-2.5-flash" # default model
+$endpoint = "https://generativelanguage.googleapis.com/v1beta/models/{0}:generateContent" -f $model_name
 $apiKey   = $env:GEMINI_API_KEY
 # echo "$apikey"
+echo "$endpoint"
 
 $question = Read-Host "Ask"
 
@@ -49,6 +51,7 @@ if (-not $response) {
     throw "Empty response from API"
 }
 
+# echo $response
 $markdown = $response | jq -r '.candidates[0].content.parts[0].text'
 
 if (-not $markdown) {
