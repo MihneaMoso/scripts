@@ -15,7 +15,7 @@ download_folder() {
   mkdir -p "$dest"
 
   # Get directory contents
-  contents=$(curl -s "$url")
+  contents=$(curl -sL "$url")
 
   # Process each item
   echo "$contents" | jq -c '.[]' | while read item; do
