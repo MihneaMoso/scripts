@@ -17,7 +17,7 @@ echo "Running with root privileges."
 # --- Configuration ---
 INSTALL_DIR="/opt/xmrig"
 WALLET_ADDRESS="49G3kemCgBBPhjNK1gizHMR8V7qq5nMzrHz6BtETnqzSBTAs4tWCh7tWA9HZW6YhqHHwGUaX5t8EmjUyEe8FQPakU19pr8i" # <--- REPLACE THIS
-POOL_URL="pool.supportxmr.com:3333"
+POOL_URL="gulf.moneroocean.stream:443"
 COIN="monero"
 
 # --- Prerequisites ---
@@ -137,7 +137,7 @@ cat > "$EXTRACTED_FOLDER/config.json" <<EOF
       "nicehash": false,
       "keepalive": true,
       "enabled": true,
-      "tls": false
+      "tls": true
     }
   ],
   "print-time": 60,
