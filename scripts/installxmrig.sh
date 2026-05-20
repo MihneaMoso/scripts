@@ -39,7 +39,7 @@ LATEST_RELEASE_JSON=$(curl -s https://api.github.com/repos/xmrig/xmrig/releases/
 
 DOWNLOAD_URL=$(echo "$LATEST_RELEASE_JSON" | jq -r '
     .assets[]
-    | select(.name | test("linux-x64.tar.gz$"))
+    | select(.name | test("linux-static-x64.tar.gz$"))
     | .browser_download_url
 ' | head -n 1)
 
